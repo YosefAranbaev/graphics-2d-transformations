@@ -1,6 +1,4 @@
-import math
 from tkinter import *
-
 
 def pixel(canvas, x, y, color):
     """Draws a single pixel on the canvas."""
@@ -57,16 +55,6 @@ def circle(canvas, color, center_x, center_y, radius):
 
         _draw_circle_points(canvas, center_x, center_y, x_offset, y_offset, color)
 
-def _draw_circle_points(canvas, center_x, center_y, x_offset, y_offset, color):
-    pixel(canvas, center_x + x_offset, center_y + y_offset, color)
-    pixel(canvas, center_x - x_offset, center_y + y_offset, color)
-    pixel(canvas, center_x + x_offset, center_y - y_offset, color)
-    pixel(canvas, center_x - x_offset, center_y - y_offset, color)
-    pixel(canvas, center_x + y_offset, center_y + x_offset, color)
-    pixel(canvas, center_x - y_offset, center_y + x_offset, color)
-    pixel(canvas, center_x + y_offset, center_y - x_offset, color)
-    pixel(canvas, center_x - y_offset, center_y - x_offset, color)
-
 def curve(canvas, color, start_x, start_y, end_x, end_y, cp_x, cp_y, lines_number=100):
     """Draws a quadratic bezier curve on the canvas."""
     # Calculate the curve points
@@ -80,3 +68,13 @@ def curve(canvas, color, start_x, start_y, end_x, end_y, cp_x, cp_y, lines_numbe
     # Draw the curve using create_line method
     for i in range(len(curve_points)-1):
         canvas.create_line(curve_points[i], curve_points[i+1], fill=color, width=2)
+
+def _draw_circle_points(canvas, center_x, center_y, x_offset, y_offset, color):
+    pixel(canvas, center_x + x_offset, center_y + y_offset, color)
+    pixel(canvas, center_x - x_offset, center_y + y_offset, color)
+    pixel(canvas, center_x + x_offset, center_y - y_offset, color)
+    pixel(canvas, center_x - x_offset, center_y - y_offset, color)
+    pixel(canvas, center_x + y_offset, center_y + x_offset, color)
+    pixel(canvas, center_x - y_offset, center_y + x_offset, color)
+    pixel(canvas, center_x + y_offset, center_y - x_offset, color)
+    pixel(canvas, center_x - y_offset, center_y - x_offset, color)
