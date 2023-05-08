@@ -20,7 +20,7 @@ class App:
     #     # Create a canvas for drawing shapes
     #     self.canvas = tk.Canvas(master, width=600, height=600, bg="white")
     #     self.canvas.pack()
-
+    
     #     # Draw the figure
     #     self.draw_figure(self.initial_points)
 
@@ -156,6 +156,8 @@ class App:
 
         def exit_gui():
             root.destroy()
+            
+            
 
 
         load_btn = tk.Button(root, text="Load", command=load_button)
@@ -187,6 +189,8 @@ class App:
 
 
         root.mainloop()
+        
+        
 
 
 def main():
@@ -194,6 +198,51 @@ def main():
     app = App()
     app.create_gui()
     # root.mainloop()
+    
+    # Function to handle the move button click event
+def move_button_clicked():
+    # Get the x and y offsets from the user
+    x_offset = float(x_offset_entry.get())
+    y_offset = float(y_offset_entry.get())
+
+    # Call the move_shape function to move the shape
+    app.current_points = move_shape(app.current_points, x_offset, y_offset, app.canvas, app.draw_figure)
+
+# Function to handle the scale button click event
+def scale_button_clicked():
+    # Get the scale factor and pivot coordinates from the user
+    scale_factor = float(scale_factor_entry.get())
+    pivot_x = float(pivot_x_entry.get())
+    pivot_y = float(pivot_y_entry.get())
+
+    # Call the scale_shape function to scale the shape
+    app.current_points = scale_shape(app.current_points, scale_factor, (pivot_x, pivot_y), app.canvas, app.draw_figure)
+
+# Function to handle the rotate button click event
+def rotate_button_clicked():
+    # Get the rotation angle and pivot coordinates from the user
+    angle = float(angle_entry.get())
+    pivot_x = float(pivot_x_entry.get())
+    pivot_y = float(pivot_y_entry.get())
+
+    # Call the rotate_shape function to rotate the shape
+    app.current_points = rotate_shape(app.current_points, angle, (pivot_x, pivot_y), app.canvas, app.draw_figure)
+
+# Function to handle the mirror X button click event
+def mirror_x_button_clicked():
+    # Call the mirror_x_shape function to mirror the shape along the X-axis
+    app.current_points = mirror_x_shape(app.current_points, app.canvas, app.draw_figure)
+
+# Function to handle the mirror Y button click event
+def mirror_y_button_clicked():
+    # Call the mirror_y_shape function to mirror the shape along the Y-axis
+    app.current_points = mirror_y_shape(app.current_points, app.canvas, app.draw_figure)
+
+# Function to handle the crop button click event
+def crop_button_clicked():
+    # Call the crop_shape function to crop the shape
+    app.current_points = crop_shape(app.current_points, app.canvas, app.draw_figure)
+
 
 if __name__ == '__main__':
     main()
