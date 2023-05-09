@@ -8,6 +8,18 @@ def pixel(canvas, x, y, color):
 
 def line(canvas, color, x1, y1, x2, y2):
     """Draws a line between two points on the canvas."""
+
+    # Check if the canvas is None
+    if canvas is None:
+        return
+
+    # Convert input coordinates to integers
+    x1, y1, x2, y2 = map(int, (x1, y1, x2, y2))
+
+    # Check if the input points have zero length
+    if x1 == x2 and y1 == y2:
+        return
+
     # Calculate the distance between two points
     dx = abs(x2 - x1)
     dy = abs(y2 - y1)
@@ -23,11 +35,14 @@ def line(canvas, color, x1, y1, x2, y2):
 
     # Draw the line by iterating over the pixels along the line
     while True:
+        # Set the color of the current pixel
         pixel(canvas, x, y, color)
 
+        # Stop the loop if we have reached the end point
         if x == x2 and y == y2:
             break
 
+        # Update the error and position values
         e2 = 2 * err
         if e2 > -dy:
             err -= dy

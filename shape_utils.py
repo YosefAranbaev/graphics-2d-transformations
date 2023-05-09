@@ -49,6 +49,7 @@ def get_center(shape_dictionary):
     y_total = 0
     count = 0
     center_x = center_y = 0
+    
     # iterate through lines
     for line in shape_dictionary['line']:
         x_total += (line[1] + line[3])/2
