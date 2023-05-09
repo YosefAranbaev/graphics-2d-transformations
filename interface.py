@@ -4,7 +4,7 @@ from tkinter import simpledialog
 import tkinter as tk
 import csv
 from shapes import line, circle, curve
-from transformations import mirror_shape_x, mirror_shape_y, shear_shape
+from transformations import mirror_shape_x, mirror_shape_y, shear_shape, rotate_shape_45, scale_shape_15
 from exception import exception
 
 class App:
@@ -59,7 +59,6 @@ class App:
         for cir in points['circle']:
             color, x, y, radius = cir[0], cir[1], cir[2], cir[3]
             circle(self.canvas, color, x, y, radius)
-
         for cur in points['curve']:
             color, start_x, start_y, end_x, end_y, cp_x, cp_y = cur[0], cur[1], cur[2], cur[3], cur[4], cur[5], cur[6]
             curve(self.canvas, color, start_x, start_y, end_x, end_y, cp_x, cp_y)
@@ -83,6 +82,7 @@ class App:
             # Create a canvas for drawing shapes
             # Draw the figure
             self.draw_figure(self.initial_points)
+            self.current_points = self.initial_points
             # Shear the shape with mouse grabbing
             # self.current_points = shear_shape(self.canvas, self.initial_points)
             print("Load")
@@ -91,25 +91,23 @@ class App:
             print("Move")
 
         def scale_button():
-            x = simpledialog.askinteger("Scale", "Enter x value (0-1000):", minvalue=0, maxvalue=1000)
-            y = simpledialog.askinteger("Scale", "Enter y value (0-1000):", minvalue=0, maxvalue=1000)
-            if x is not None and y is not None:
-                print(f"Scale {x} {y}")
-            else:
-                messagebox.showerror("Invalid values", "Please enter valid values.")
+            self.canvas.delete("all")
+            self.current_points = scale_shape_15(self.canvas, self.current_points)
+            self.draw_figure(self.current_points)
+            print(f"Scale")
 
         def Rotate_button():
-            x = simpledialog.askinteger("Rotate", "Enter x value (0-360):", minvalue=0, maxvalue=360)
-            if x is not None:
-                print(f"Scale {x}")
-            else:
-                messagebox.showerror("Invalid values", "Please enter valid values.")
+            self.canvas.delete("all")
+            self.current_points = rotate_shape_45(self.canvas, self.current_points)
+            print("---dd-d-d-d-d-")
+            self.draw_figure(self.current_points)
+            print(f"rotate")
         
         def MirrorX_button():
             # x = simpledialog.askinteger("MirrorX", "Enter x value (0-5):", minvalue=0, maxvalue=5)
             # if x is not None:
             self.canvas.delete("all")
-            self.current_points = mirror_shape_x(self.canvas, self.initial_points)
+            self.current_points = mirror_shape_x(self.canvas, self.current_points)
             self.draw_figure(self.current_points)
             print(f"Scale")
 
@@ -127,7 +125,7 @@ class App:
             # y = simpledialog.askinteger("MirrorY", "Enter y value (0-5):", minvalue=0, maxvalue=5)
             # if y is not None:
             self.canvas.delete("all")
-            self.current_points = mirror_shape_y(self.canvas, self.initial_points)
+            self.current_points = mirror_shape_y(self.canvas, self.current_points)
             self.draw_figure(self.current_points)
             print(f"Scale")
             # else:
@@ -138,7 +136,7 @@ class App:
             # y = simpledialog.askinteger("Crop", "Enter y value (0-1000):", minvalue=0, maxvalue=1000)
             # if x is not None and y is not None:
             self.canvas.delete("all")
-            self.current_points = shear_shape(self.canvas, self.initial_points)
+            self.current_points = shear_shape(self.canvas, self.current_points)
             self.draw_figure(self.current_points)
             # print(f"Scale {x} {y}")
             # else:
@@ -198,51 +196,6 @@ def main():
     app = App()
     app.create_gui()
     # root.mainloop()
-    
-    # Function to handle the move button click event
-def move_button_clicked():
-    # Get the x and y offsets from the user
-    x_offset = float(x_offset_entry.get())
-    y_offset = float(y_offset_entry.get())
-
-    # Call the move_shape function to move the shape
-    app.current_points = move_shape(app.current_points, x_offset, y_offset, app.canvas, app.draw_figure)
-
-# Function to handle the scale button click event
-def scale_button_clicked():
-    # Get the scale factor and pivot coordinates from the user
-    scale_factor = float(scale_factor_entry.get())
-    pivot_x = float(pivot_x_entry.get())
-    pivot_y = float(pivot_y_entry.get())
-
-    # Call the scale_shape function to scale the shape
-    app.current_points = scale_shape(app.current_points, scale_factor, (pivot_x, pivot_y), app.canvas, app.draw_figure)
-
-# Function to handle the rotate button click event
-def rotate_button_clicked():
-    # Get the rotation angle and pivot coordinates from the user
-    angle = float(angle_entry.get())
-    pivot_x = float(pivot_x_entry.get())
-    pivot_y = float(pivot_y_entry.get())
-
-    # Call the rotate_shape function to rotate the shape
-    app.current_points = rotate_shape(app.current_points, angle, (pivot_x, pivot_y), app.canvas, app.draw_figure)
-
-# Function to handle the mirror X button click event
-def mirror_x_button_clicked():
-    # Call the mirror_x_shape function to mirror the shape along the X-axis
-    app.current_points = mirror_x_shape(app.current_points, app.canvas, app.draw_figure)
-
-# Function to handle the mirror Y button click event
-def mirror_y_button_clicked():
-    # Call the mirror_y_shape function to mirror the shape along the Y-axis
-    app.current_points = mirror_y_shape(app.current_points, app.canvas, app.draw_figure)
-
-# Function to handle the crop button click event
-def crop_button_clicked():
-    # Call the crop_shape function to crop the shape
-    app.current_points = crop_shape(app.current_points, app.canvas, app.draw_figure)
-
 
 if __name__ == '__main__':
     main()
