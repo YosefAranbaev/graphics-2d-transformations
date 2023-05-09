@@ -69,7 +69,8 @@ def mirror_shape_x(shape_dictionary):
     return move_shape(shape_dictionary, dx, dy)  
 
 def shear_shape(shape_dictionary, shear_const=1, axis='x'):
-    # TODO: make it work by mouse dragging
+    prev_figure_center_point = get_center(shape_dictionary)
+
     new_shape_dictionary = {}
     current_center_x, current_center_y = get_center(shape_dictionary)
     for key, value in shape_dictionary.items():
@@ -107,26 +108,9 @@ def shear_shape(shape_dictionary, shear_const=1, axis='x'):
             new_value.append(new_shape)
         new_shape_dictionary[key] = new_value
 
-    # Move the shape to the initial center
-    new_center_x, new_center_y = get_center(shape_dictionary)
-    dx = current_center_x - new_center_x
-    dy = current_center_y - new_center_y
-    for key, value in new_shape_dictionary.items():
-        for shape in value:
-            if key == 'line':
-                shape[1] += dx
-                shape[3] += dx
-                shape[2] += dy
-                shape[4] += dy
-            elif key == 'circle':
-                shape[1] += dx
-                shape[2] += dy
-            elif key == 'curve':
-                shape[1] += dx
-                shape[3] += dx
-                shape[5] += dx
-                shape[2] += dy
-                shape[4] += dy
-                shape[6] += dy
+    # move the figure back to the previous center point
+    new_figure_center_point = get_center(new_shape_dictionary)
+    dx = prev_figure_center_point[0] - new_figure_center_point[0]
+    dy = prev_figure_center_point[1] - new_figure_center_point[1]
 
-    return new_shape_dictionary
+    return move_shape(new_shape_dictionary, dx, dy)  
