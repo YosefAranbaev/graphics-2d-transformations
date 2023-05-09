@@ -43,23 +43,24 @@ class App:
             color, start_x, start_y, end_x, end_y, cp_x, cp_y = cur[0], cur[1], cur[2], cur[3], cur[4], cur[5], cur[6]
             curve(self.canvas, color, start_x, start_y, end_x, end_y, cp_x, cp_y)
 
-    # def center_figure(self, shape_dictionary):
-    #     # calculate the center of the screen
-    #     screen_width = self.root.winfo_screenwidth()
-    #     screen_height = self.root.winfo_screenheight()
-    #     center_x = int(screen_width / 2)
-    #     center_y = int(screen_height / 2)
+    def center_figure(self):
+        # calculate the center of the screen
+        self.root.update_idletasks() 
+        screen_width = self.root.winfo_width()
+        screen_height = self.root.winfo_height()
+        center_x = int(screen_width / 2)
+        center_y = int(screen_height / 2)
 
-    #     # calculate the center of the figure
-    #     current_figure_center_point = get_center(shape_dictionary)
+        # calculate the center of the figure
+        current_figure_center_point = get_center(self.initial_points)
 
-    #     # find dx and dy
-    #     dx = center_x - current_figure_center_point[0]
-    #     dy = center_y - current_figure_center_point[1]
+        # find dx and dy
+        dx = center_x - current_figure_center_point[0]
+        dy = center_y - current_figure_center_point[1]
 
-    #     # move the figure to the center 
-    #     self.current_points = move_shape(shape_dictionary, dx, dy)
-    #     self.draw_figure(self.current_points)
+        # move the figure to the center 
+        self.initial_points = move_shape(self.initial_points, dx, dy)
+        self.draw_figure(self.initial_points)
 
     def create_gui(self):
         self.root = tk.Tk()
@@ -78,15 +79,15 @@ class App:
 
         # read points from the input and draw the figure
         self.initial_points = {'line': [], 'circle': [], 'curve': []}
-        self.read_points('input.csv')
-        self.draw_figure(self.initial_points)
+        self.read_points('input.csv') 
+        self.center_figure()
         self.current_points = self.initial_points.copy()
 
         def reload_button(): 
             self.initial_points = {'line': [], 'circle': [], 'curve': []}
             self.canvas.delete("all")
             self.read_points('input.csv')
-            self.draw_figure(self.initial_points)
+            self.center_figure()
             self.current_points = self.initial_points.copy()
 
         def move_button():
