@@ -68,11 +68,10 @@ def mirror_shape_x(shape_dictionary):
 
     return move_shape(shape_dictionary, dx, dy)  
 
-def shear_shape(shape_dictionary, shear_const=1, axis='x'):
+def shear_shape(shape_dictionary, shear_const_x=0.1, shear_const_y=0.1):
     prev_figure_center_point = get_center(shape_dictionary)
 
     new_shape_dictionary = {}
-    current_center_x, current_center_y = get_center(shape_dictionary)
     for key, value in shape_dictionary.items():
         new_value = []
         for shape in value:
@@ -80,30 +79,24 @@ def shear_shape(shape_dictionary, shear_const=1, axis='x'):
             color = shape[0]
             if key == 'line':
                 x1, y1, x2, y2 = shape[1:]
-                if axis == 'x':
-                    x1 += shear_const * y1
-                    x2 += shear_const * y2
-                elif axis == 'y':
-                    y1 += shear_const * x1
-                    y2 += shear_const * x2
+                x1 += shear_const_x * y1
+                y1 += shear_const_y * x1
+                x2 += shear_const_x * y2
+                y2 += shear_const_y * x2
                 new_shape = [color, x1, y1, x2, y2]
             elif key == 'circle':
                 x, y, r = shape[1:]
-                if axis == 'x':
-                    x += shear_const * y
-                elif axis == 'y':
-                    y += shear_const * x
+                x += shear_const_x * y
+                y += shear_const_y * x
                 new_shape = [color, x, y, r]
             elif key == 'curve':
                 start_x, start_y, end_x, end_y, cp_x, cp_y = shape[1:]
-                if axis == 'x':
-                    start_x += shear_const * start_y
-                    end_x += shear_const * end_y
-                    cp_x += shear_const * cp_y
-                elif axis == 'y':
-                    start_y += shear_const * start_x
-                    end_y += shear_const * end_x
-                    cp_y += shear_const * cp_x
+                start_x += shear_const_x * start_y
+                end_x += shear_const_x * end_y
+                cp_x += shear_const_x * cp_y
+                start_y += shear_const_y * start_x
+                end_y += shear_const_y * end_x
+                cp_y += shear_const_y * cp_x
                 new_shape = [color, start_x, start_y, end_x, end_y, cp_x, cp_y]
             new_value.append(new_shape)
         new_shape_dictionary[key] = new_value
@@ -113,4 +106,4 @@ def shear_shape(shape_dictionary, shear_const=1, axis='x'):
     dx = prev_figure_center_point[0] - new_figure_center_point[0]
     dy = prev_figure_center_point[1] - new_figure_center_point[1]
 
-    return move_shape(new_shape_dictionary, dx, dy)  
+    return move_shape(new_shape_dictionary, dx, dy)

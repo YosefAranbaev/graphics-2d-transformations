@@ -7,6 +7,8 @@ from shapes import line, circle, curve
 from transformations import move_shape, mirror_shape_x, mirror_shape_y, shear_shape
 from shape_utils import get_center
 
+drag_id = ''
+
 class App:
     def read_points(self, path):
         with open(path, 'r', encoding='utf-8-sig', newline='') as csvfile:
@@ -60,7 +62,7 @@ class App:
 
         # move the figure to the center 
         self.initial_points = move_shape(self.initial_points, dx, dy)
-        self.draw_figure(self.initial_points)
+        self.draw_figure(self.initial_points) 
 
     def create_gui(self):
         self.root = tk.Tk()
