@@ -62,7 +62,6 @@ def scale_shape_15(screen, obj):
 
     return move_shape(new_obj, dx, dy)
 
-
 def rotate_shape_45(screen, obj):
     prev_figure_center_point = get_center(obj)
     angle = math.pi/4
@@ -189,7 +188,7 @@ def mirror_shape_y(shape_dictionary):
 
     return move_shape(shape_dictionary, dx, dy)  
 
-def shear_shape(shape_dictionary, shear_const_x=0.1, shear_const_y=0.1):
+def shear_shape(shape_dictionary, shear_const_x=0.1, shear_const_y=0):
     prev_figure_center_point = get_center(shape_dictionary)
 
     new_shape_dictionary = {}
