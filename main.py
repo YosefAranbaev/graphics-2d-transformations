@@ -15,14 +15,14 @@ class App:
         self.canvas.delete("all")
         self.read_points('input.csv')
         self.current_points = self.center_figure(self.initial_points)
-        self.current_points = self.normalize_size(self.initial_points)
-        self.draw_figure(self.current_points)
+        self.normalize_size(self.initial_points)
 
     def scale(self, scale_factor = 1.5):
         self.stop_shear()
         self.stop_move()
         self.canvas.delete("all")
-        return scale_shape_15(self.current_points, scale_factor)
+        self.current_points = scale_shape_15(self.current_points, scale_factor)
+        self.draw_figure(self.current_points)
 
     def read_points(self, path):
         with open(path, 'r', encoding='utf-8-sig', newline='') as csvfile:
@@ -94,7 +94,7 @@ class App:
         scale_factor = target_size / max_figure_size
 
         # rescale the figure
-        return self.scale(scale_factor)
+        self.scale(scale_factor)
 
     def on_mouse_press(self, event):
         # ignore clicks on the control buttons
