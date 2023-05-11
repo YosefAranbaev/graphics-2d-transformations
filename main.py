@@ -7,9 +7,6 @@ from shapes import line, circle, curve
 from transformations import mirror_shape_x, mirror_shape_y, shear_shape, rotate_shape_45, scale_shape_15, move_shape
 from shape_utils import get_center, get_topmost_point, get_rightmost_point, get_leftmost_point
 
-is_mouse_pressed = False
-shear_on = False
-
 class App:
     def read_points(self, path):
         with open(path, 'r', encoding='utf-8-sig', newline='') as csvfile:
@@ -66,6 +63,11 @@ class App:
         self.draw_figure(self.initial_points)
 
     def on_mouse_press(self, event):
+        # ignore clicks on the control buttons
+        if event.x < 358 and event.y < 10:
+            return
+        
+        # shear the figure
         if self.shear_on == True:
             self.is_mouse_pressed = True
             self.call_shear_x(event.x)
@@ -74,12 +76,20 @@ class App:
         self.is_mouse_pressed = False
 
     def on_mouse_motion(self, event):
+        # ignore clicks on the control buttons
+        if event.x < 358 and event.y < 10:
+            return
+        
+        # shear the figure
         if self.is_mouse_pressed:
             self.call_shear_x(event.x)
 
     def stop_shear(self):
         self.is_mouse_pressed = False
         self.shear_on = False
+
+    def stop_move(self):
+        self.move_on = False
 
     def call_shear_x(self, mouse_x):
         shape_center_point = get_center(self.current_points)
@@ -100,11 +110,44 @@ class App:
         self.current_points = shear_shape(self.current_points, shear_const_x)
         self.draw_figure(self.current_points)
 
+    def get_mouse_coordinates(self, event):
+        # ignore clicks on the control buttons
+        if event.x < 358 and event.y < 10:
+            return
+        
+        # ignore not move process
+        if not self.move_on:
+            return
+        
+        mouse_x = event.x
+        mouse_y = event.y
+
+        self.coordinates.append((mouse_x, mouse_y))
+        self.click_count += 1
+
+        if self.click_count == 2:
+            x1, y1 = self.coordinates[0]
+            x2, y2 = self.coordinates[1]
+            dx = x2 - x1
+            dy = y2 - y1
+
+            # move the figure
+            self.canvas.delete("all")
+            self.current_points = move_shape(self.current_points, dx, dy)
+            self.draw_figure(self.current_points)
+
+            # Reset click count and coordinates list
+            self.click_count = 0
+            self.coordinates = []
+
     def create_gui(self):
         self.root = tk.Tk()
         self.root.title("2D Painter")
         self.is_mouse_pressed = False
         self.shear_on = False
+        self.move_on = False
+        self.click_count = 0
+        self.coordinates = []
 
         # calculate the canvas width and height as 60% of the screen size
         screen_width = self.root.winfo_screenwidth()
@@ -125,6 +168,7 @@ class App:
 
         def reload_button():
             self.stop_shear()
+            self.stop_move()
             self.initial_points = {'line': [], 'circle': [], 'curve': []}
             self.canvas.delete("all")
             self.read_points('input.csv')
@@ -132,40 +176,42 @@ class App:
             self.current_points = self.initial_points.copy()
 
         def move_button():
-            # TODO: get dx and dy by clicking on the screen
-            dx = 100
-            dy = 100
-
             self.stop_shear()
-            self.canvas.delete("all")
-            self.current_points = move_shape(self.current_points, dx, dy)
-            self.draw_figure(self.current_points)
+            self.move_on = True
+
+            # Bind the mouse button event to the function
+            self.root.bind("<Button-1>", self.get_mouse_coordinates)   
 
         def scale_button():
             self.stop_shear()
+            self.stop_move()
             self.canvas.delete("all")
             self.current_points = scale_shape_15(self.canvas, self.current_points)
             self.draw_figure(self.current_points)
             
         def rotate_button():
             self.stop_shear()
+            self.stop_move()
             self.canvas.delete("all")
             self.current_points = rotate_shape_45(self.canvas, self.current_points)
             self.draw_figure(self.current_points)
         
         def mirrorX_button():
             self.stop_shear()
+            self.stop_move()
             self.canvas.delete("all")
             self.current_points = mirror_shape_x(self.current_points)
             self.draw_figure(self.current_points)
         
         def mirrorY_button():
             self.stop_shear()
+            self.stop_move()
             self.canvas.delete("all")
             self.current_points = mirror_shape_y(self.current_points)
             self.draw_figure(self.current_points)
         
         def shear_button():
+            self.stop_move()
             self.shear_on = True
             
             # Bind mouse press, release, and motion events to functions
@@ -175,9 +221,10 @@ class App:
 
         def show_help():
             self.stop_shear()
+            self.stop_move()
             help_str = "Available Buttons:\n\n"
             help_str += "Load -load the draw and center it in the screen\n"
-            help_str += "Move - the shape\n"
+            help_str += "Move - click on two points on canvas to move the shape\n"
             help_str += "Scale - the shape will be bigger\n"
             help_str += "Rotate - rotate the shape\n"
             help_str += "MirrorX - mirror the shape along the x-axis \n"
@@ -189,6 +236,7 @@ class App:
 
         def exit_gui():
             self.stop_shear()
+            self.stop_move()
             self.root.destroy()
 
         reload_btn = tk.Button(self.root, text="Reload", command=reload_button)
