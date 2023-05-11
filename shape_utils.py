@@ -74,3 +74,91 @@ def get_center(shape_dictionary):
         center_y = y_total / count
 
     return (center_x, center_y)
+
+def get_topmost_point(shape_dictionary):
+    topmost_y = float('inf')
+    x_total = 0
+    count = 0
+
+    # Iterate through lines
+    for line in shape_dictionary.get('line', []):
+        x_total += (line[1] + line[3]) / 2
+        topmost_y = min(topmost_y, line[2], line[4])
+        count += 1
+
+    # Iterate through circles
+    for circle in shape_dictionary.get('circle', []):
+        x_total += circle[1]
+        topmost_y = min(topmost_y, circle[2])
+        count += 1
+
+    # Iterate through curves
+    for curve in shape_dictionary.get('curve', []):
+        x_total += (curve[1] + curve[3] + curve[5]) / 3
+        topmost_y = min(topmost_y, curve[2], curve[4], curve[6])
+        count += 1
+
+    if count > 0:
+        center_x = x_total / count
+        return (center_x, topmost_y)
+
+    return None
+
+def get_rightmost_point(shape_dictionary):
+    rightmost_x = float('-inf')
+    y_total = 0
+    count = 0
+
+    # Iterate through lines
+    for line in shape_dictionary.get('line', []):
+        rightmost_x = max(rightmost_x, line[1], line[3])
+        y_total += (line[2] + line[4]) / 2
+        count += 1
+
+    # Iterate through circles
+    for circle in shape_dictionary.get('circle', []):
+        rightmost_x = max(rightmost_x, circle[1] + circle[3])
+        y_total += circle[2]
+        count += 1
+
+    # Iterate through curves
+    for curve in shape_dictionary.get('curve', []):
+        rightmost_x = max(rightmost_x, curve[1], curve[3], curve[5])
+        y_total += (curve[2] + curve[4] + curve[6]) / 3
+        count += 1
+
+    if count > 0:
+        center_y = y_total / count
+        return (rightmost_x, center_y)
+
+    return None
+
+def get_leftmost_point(shape_dictionary):
+    leftmost_x = float('inf')
+    y_total = 0
+    count = 0
+
+    # Iterate through lines
+    for line in shape_dictionary.get('line', []):
+        leftmost_x = min(leftmost_x, line[1], line[3])
+        y_total += (line[2] + line[4]) / 2
+        count += 1
+
+    # Iterate through circles
+    for circle in shape_dictionary.get('circle', []):
+        leftmost_x = min(leftmost_x, circle[1] - circle[3])
+        y_total += circle[2]
+        count += 1
+
+    # Iterate through curves
+    for curve in shape_dictionary.get('curve', []):
+        leftmost_x = min(leftmost_x, curve[1], curve[3], curve[5])
+        y_total += (curve[2] + curve[4] + curve[6]) / 3
+        count += 1
+
+    if count > 0:
+        center_y = y_total / count
+        return (leftmost_x, center_y)
+
+    return None
+

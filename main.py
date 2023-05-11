@@ -5,7 +5,7 @@ import tkinter as tk
 import csv
 from shapes import line, circle, curve
 from transformations import mirror_shape_x, mirror_shape_y, shear_shape, rotate_shape_45, scale_shape_15, move_shape
-from shape_utils import get_center
+from shape_utils import get_center, get_topmost_point, get_rightmost_point, get_leftmost_point
 
 is_mouse_pressed = False
 shear_on = False
@@ -68,23 +68,35 @@ class App:
     def on_mouse_press(self, event):
         if self.shear_on == True:
             self.is_mouse_pressed = True
-            self.call_shear(event.x, event.y)
+            self.call_shear_x(event.x)
 
     def on_mouse_release(self, event):
         self.is_mouse_pressed = False
 
     def on_mouse_motion(self, event):
         if self.is_mouse_pressed:
-            self.call_shear(event.x, event.y)
+            self.call_shear_x(event.x)
 
     def stop_shear(self):
         self.is_mouse_pressed = False
         self.shear_on = False
 
-    def call_shear(self, mouse_x, mouse_y):
+    def call_shear_x(self, mouse_x):
         shape_center_point = get_center(self.current_points)
-        dx = shape_center_point[0] - mouse_x
-        shear_const_x = dx/100
+        shape_rightmost_point = get_rightmost_point(self.current_points)
+        shape_leftmost_point = get_leftmost_point(self.current_points)
+        
+        dx = 0
+        if mouse_x < shape_leftmost_point[0]:
+            dx = shape_leftmost_point[0] - mouse_x
+        elif mouse_x > shape_rightmost_point[0] :
+            dx = shape_rightmost_point[0] - mouse_x
+        elif mouse_x > shape_leftmost_point[0] and mouse_x < shape_center_point[0]:
+            dx = shape_center_point[0] - mouse_x
+        elif mouse_x < shape_rightmost_point[0] and mouse_x > shape_center_point[0]:
+            dx = shape_center_point[0] - mouse_x
+        
+        shear_const_x = dx/1000
 
         self.canvas.delete("all")
         self.current_points = shear_shape(self.current_points, shear_const_x)
