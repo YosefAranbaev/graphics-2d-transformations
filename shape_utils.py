@@ -162,3 +162,22 @@ def get_leftmost_point(shape_dictionary):
 
     return None
 
+def get_figure_width(shape_dictionary):
+    leftmost_point = get_leftmost_point(shape_dictionary)
+    rightmost_point = get_rightmost_point(shape_dictionary)
+
+    if leftmost_point is not None and rightmost_point is not None:
+        width = abs(rightmost_point[0] - leftmost_point[0])
+        return width
+
+    return None
+
+def get_figure_height(shape_dictionary):
+    topmost_point = get_topmost_point(shape_dictionary)
+    biggest_y = get_biggest_y(shape_dictionary)
+
+    if topmost_point is not None and biggest_y is not None:
+        height = abs(biggest_y - topmost_point[1])
+        return height
+
+    return None

@@ -2,12 +2,11 @@ import numpy as np
 import math
 from shape_utils import get_biggest_x, get_biggest_y, get_center
 
-def scale_shape_15(screen, obj):
-    prev_figure_center_point = get_center(obj)
+def scale_shape_15(shape_dictionary, scale_factor):
+    prev_figure_center_point = get_center(shape_dictionary)
 
-    scale_factor = 1.5
     new_obj = {}
-    for shape_type, shapes in obj.items():
+    for shape_type, shapes in shape_dictionary.items():
         new_shapes = []
         for i, shape in enumerate(shapes):
             if shape_type == 'line':
@@ -62,11 +61,11 @@ def scale_shape_15(screen, obj):
 
     return move_shape(new_obj, dx, dy)
 
-def rotate_shape_45(screen, obj):
-    prev_figure_center_point = get_center(obj)
+def rotate_shape_45(shape_dictionary):
+    prev_figure_center_point = get_center(shape_dictionary)
     angle = math.pi/4
     new_obj = {}
-    for shape_type, shapes in obj.items():
+    for shape_type, shapes in shape_dictionary.items():
         new_shapes = []
         for i, shape in enumerate(shapes):
             if shape_type == 'line':

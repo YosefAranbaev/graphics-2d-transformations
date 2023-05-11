@@ -5,9 +5,27 @@ import tkinter as tk
 import csv
 from shapes import line, circle, curve
 from transformations import mirror_shape_x, mirror_shape_y, shear_shape, rotate_shape_45, scale_shape_15, move_shape
-from shape_utils import get_center, get_topmost_point, get_rightmost_point, get_leftmost_point
+from shape_utils import get_center, get_topmost_point, get_rightmost_point, get_leftmost_point, get_figure_width, get_figure_height
 
 class App:
+    def reload(self):
+        self.stop_shear()
+        self.stop_move()
+        self.initial_points = {'line': [], 'circle': [], 'curve': []}
+        self.canvas.delete("all")
+        self.read_points('input.csv')
+        self.center_figure()
+        self.current_points = self.initial_points.copy()
+        self.normalize_size()
+        self.current_points = self.initial_points.copy()
+
+    def scale(self, scale_factor = 1.5):
+        self.stop_shear()
+        self.stop_move()
+        self.canvas.delete("all")
+        self.current_points = scale_shape_15(self.current_points, scale_factor)
+        self.draw_figure(self.current_points)
+
     def read_points(self, path):
         with open(path, 'r', encoding='utf-8-sig', newline='') as csvfile:
             csvreader = csv.reader(csvfile)
@@ -61,6 +79,25 @@ class App:
         # move the figure to the center 
         self.initial_points = move_shape(self.initial_points, dx, dy)
         self.draw_figure(self.initial_points)
+
+    def normalize_size(self):
+        # calculate max figure size
+        figure_width = get_figure_width(self.current_points)
+        figure_height = get_figure_height(self.current_points)
+        max_figure_size = max(figure_width, figure_height)
+
+        # calculate min screen size
+        self.root.update_idletasks() 
+        screen_width = self.root.winfo_width()
+        screen_height = self.root.winfo_height()
+        min_screen_size = min(screen_width, screen_height)
+
+        # calculate the scale factor
+        target_size = 0.8 * min_screen_size
+        scale_factor = target_size / max_figure_size
+
+        # rescale the figure
+        self.scale(scale_factor)
 
     def on_mouse_press(self, event):
         # ignore clicks on the control buttons
@@ -161,19 +198,7 @@ class App:
         self.canvas.pack(expand=True, fill="both")
 
         # read points from the input and draw the figure
-        self.initial_points = {'line': [], 'circle': [], 'curve': []}
-        self.read_points('input.csv') 
-        self.center_figure()
-        self.current_points = self.initial_points.copy()
-
-        def reload_button():
-            self.stop_shear()
-            self.stop_move()
-            self.initial_points = {'line': [], 'circle': [], 'curve': []}
-            self.canvas.delete("all")
-            self.read_points('input.csv')
-            self.center_figure()
-            self.current_points = self.initial_points.copy()
+        self.reload()
 
         def move_button():
             self.stop_shear()
@@ -181,19 +206,12 @@ class App:
 
             # Bind the mouse button event to the function
             self.root.bind("<Button-1>", self.get_mouse_coordinates)   
-
-        def scale_button():
-            self.stop_shear()
-            self.stop_move()
-            self.canvas.delete("all")
-            self.current_points = scale_shape_15(self.canvas, self.current_points)
-            self.draw_figure(self.current_points)
-            
+     
         def rotate_button():
             self.stop_shear()
             self.stop_move()
             self.canvas.delete("all")
-            self.current_points = rotate_shape_45(self.canvas, self.current_points)
+            self.current_points = rotate_shape_45(self.current_points)
             self.draw_figure(self.current_points)
         
         def mirrorX_button():
@@ -223,9 +241,9 @@ class App:
             self.stop_shear()
             self.stop_move()
             help_str = "Available Buttons:\n\n"
-            help_str += "Load - load the drawing and center it on the screen\n"
+            help_str += "Load - load the drawing,center it on the screen and adjust the size to the current window size\n"
             help_str += "Move - click on two points on the canvas to move the shape\n"
-            help_str += "Scale - increase the shape size\n"
+            help_str += "Scale - increase the shape size by 150%\n"
             help_str += "Rotate - rotate the shape\n"
             help_str += "MirrorX - mirror the shape along the x-axis \n"
             help_str += "MirrorY - mirror the shape along the y-axis \n"
@@ -239,13 +257,13 @@ class App:
             self.stop_move()
             self.root.destroy()
 
-        reload_btn = tk.Button(self.root, text="Reload", command=reload_button)
+        reload_btn = tk.Button(self.root, text="Reload", command=self.reload)
         reload_btn.place(x=10, y=10)
 
         move_btn = tk.Button(self.root, text="Move", command=move_button)
         move_btn.place(x=58, y=10)
 
-        scale_btn = tk.Button(self.root, text="Scale", command=scale_button)
+        scale_btn = tk.Button(self.root, text="Scale", command=self.scale)
         scale_btn.place(x=100, y=10)
 
         rotate_btn = tk.Button(self.root, text="Rotate", command=rotate_button)
