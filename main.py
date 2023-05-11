@@ -68,18 +68,27 @@ class App:
     def on_mouse_press(self, event):
         if self.shear_on == True:
             self.is_mouse_pressed = True
-            print(event.x, event.y)
+            self.call_shear(event.x, event.y)
 
     def on_mouse_release(self, event):
         self.is_mouse_pressed = False
 
     def on_mouse_motion(self, event):
         if self.is_mouse_pressed:
-            print(event.x, event.y)
+            self.call_shear(event.x, event.y)
 
     def stop_shear(self):
         self.is_mouse_pressed = False
         self.shear_on = False
+
+    def call_shear(self, mouse_x, mouse_y):
+        shape_center_point = get_center(self.current_points)
+        dx = shape_center_point[0] - mouse_x
+        shear_const_x = dx/100
+
+        self.canvas.delete("all")
+        self.current_points = shear_shape(self.current_points, shear_const_x)
+        self.draw_figure(self.current_points)
 
     def create_gui(self):
         self.root = tk.Tk()
@@ -153,10 +162,6 @@ class App:
             self.root.bind("<ButtonPress-1>", self.on_mouse_press)
             self.root.bind("<ButtonRelease-1>", self.on_mouse_release)
             self.root.bind("<Motion>", self.on_mouse_motion) 
-
-            # self.canvas.delete("all")
-            # self.current_points = shear_shape(self.current_points)
-            # self.draw_figure(self.current_points)
 
         def show_help():
             self.stop_shear()
