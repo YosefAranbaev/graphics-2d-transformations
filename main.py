@@ -91,9 +91,7 @@ class App:
             dx = shape_leftmost_point[0] - mouse_x
         elif mouse_x > shape_rightmost_point[0] :
             dx = shape_rightmost_point[0] - mouse_x
-        elif mouse_x > shape_leftmost_point[0] and mouse_x < shape_center_point[0]:
-            dx = shape_center_point[0] - mouse_x
-        elif mouse_x < shape_rightmost_point[0] and mouse_x > shape_center_point[0]:
+        else:
             dx = shape_center_point[0] - mouse_x
         
         shear_const_x = dx/1000
