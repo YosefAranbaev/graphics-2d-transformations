@@ -64,7 +64,7 @@ class App:
 
     def on_mouse_press(self, event):
         # ignore clicks on the control buttons
-        if event.x < 358 and event.y < 10:
+        if event.x < 358 and event.y < 40:
             return
         
         # shear the figure
@@ -75,13 +75,13 @@ class App:
     def on_mouse_release(self, event):
         self.is_mouse_pressed = False
 
-    def on_mouse_motion(self, event):
-        # ignore clicks on the control buttons
-        if event.x < 358 and event.y < 10:
-            return
-        
-        # shear the figure
+    def on_mouse_motion(self, event):   
         if self.is_mouse_pressed:
+            # ignore clicks on the control buttons
+            if event.x < 358 and event.y < 40:
+                return
+            
+            # shear the figure
             self.call_shear_x(event.x)
 
     def stop_shear(self):
@@ -112,7 +112,7 @@ class App:
 
     def get_mouse_coordinates(self, event):
         # ignore clicks on the control buttons
-        if event.x < 358 and event.y < 10:
+        if event.x < 358 and event.y < 40:
             return
         
         # ignore not move process
@@ -223,12 +223,12 @@ class App:
             self.stop_shear()
             self.stop_move()
             help_str = "Available Buttons:\n\n"
-            help_str += "Load -load the draw and center it in the screen\n"
-            help_str += "Move - click on two points on canvas to move the shape\n"
-            help_str += "Scale - the shape will be bigger\n"
+            help_str += "Load - load the drawing and center it on the screen\n"
+            help_str += "Move - click on two points on the canvas to move the shape\n"
+            help_str += "Scale - increase the shape size\n"
             help_str += "Rotate - rotate the shape\n"
             help_str += "MirrorX - mirror the shape along the x-axis \n"
-            help_str += "MirrorX - mirror the shape along the x-axis \n"
+            help_str += "MirrorY - mirror the shape along the y-axis \n"
             help_str += "shear - drag the shape left and right for shearing\n"
             help_str += "help - press for additional information\n"
             help_str += "exit - press exit to exit\n"
