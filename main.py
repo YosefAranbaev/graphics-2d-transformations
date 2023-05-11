@@ -14,17 +14,15 @@ class App:
         self.initial_points = {'line': [], 'circle': [], 'curve': []}
         self.canvas.delete("all")
         self.read_points('input.csv')
-        self.center_figure()
-        self.current_points = self.initial_points.copy()
-        self.normalize_size()
-        self.current_points = self.initial_points.copy()
+        self.current_points = self.center_figure(self.initial_points)
+        self.current_points = self.normalize_size(self.initial_points)
+        self.draw_figure(self.current_points)
 
     def scale(self, scale_factor = 1.5):
         self.stop_shear()
         self.stop_move()
         self.canvas.delete("all")
-        self.current_points = scale_shape_15(self.current_points, scale_factor)
-        self.draw_figure(self.current_points)
+        return scale_shape_15(self.current_points, scale_factor)
 
     def read_points(self, path):
         with open(path, 'r', encoding='utf-8-sig', newline='') as csvfile:
@@ -61,7 +59,7 @@ class App:
             color, start_x, start_y, end_x, end_y, cp_x, cp_y = cur[0], cur[1], cur[2], cur[3], cur[4], cur[5], cur[6]
             curve(self.canvas, color, start_x, start_y, end_x, end_y, cp_x, cp_y)
 
-    def center_figure(self):
+    def center_figure(self, shape_dictionary):
         # calculate the center of the screen
         self.root.update_idletasks() 
         screen_width = self.root.winfo_width()
@@ -77,13 +75,12 @@ class App:
         dy = center_y - current_figure_center_point[1]
 
         # move the figure to the center 
-        self.initial_points = move_shape(self.initial_points, dx, dy)
-        self.draw_figure(self.initial_points)
+        return move_shape(self.initial_points, dx, dy)    
 
-    def normalize_size(self):
+    def normalize_size(self, shape_dictionary):
         # calculate max figure size
-        figure_width = get_figure_width(self.current_points)
-        figure_height = get_figure_height(self.current_points)
+        figure_width = get_figure_width(shape_dictionary)
+        figure_height = get_figure_height(shape_dictionary)
         max_figure_size = max(figure_width, figure_height)
 
         # calculate min screen size
@@ -97,7 +94,7 @@ class App:
         scale_factor = target_size / max_figure_size
 
         # rescale the figure
-        self.scale(scale_factor)
+        return self.scale(scale_factor)
 
     def on_mouse_press(self, event):
         # ignore clicks on the control buttons
