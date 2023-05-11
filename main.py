@@ -7,8 +7,6 @@ from shapes import line, circle, curve
 from transformations import mirror_shape_x, mirror_shape_y, shear_shape, rotate_shape_45, scale_shape_15, move_shape
 from shape_utils import get_center
 
-drag_id = ''
-
 class App:
     def read_points(self, path):
         with open(path, 'r', encoding='utf-8-sig', newline='') as csvfile:
@@ -102,25 +100,14 @@ class App:
             self.draw_figure(self.current_points)
 
         def scale_button():
-            x = simpledialog.askinteger("Scale", "Enter x value (0-1000):", minvalue=0, maxvalue=1000)
-            y = simpledialog.askinteger("Scale", "Enter y value (0-1000):", minvalue=0, maxvalue=1000)
-            if x is not None and y is not None:
-                print(f"Scale {x} {y}")
-            else:
-                messagebox.showerror("Invalid values", "Please enter valid values.")
-
-        def scale_button():
             self.canvas.delete("all")
             self.current_points = scale_shape_15(self.canvas, self.current_points)
             self.draw_figure(self.current_points)
-            print(f"Scale")
             
         def rotate_button():
             self.canvas.delete("all")
             self.current_points = rotate_shape_45(self.canvas, self.current_points)
-            print("---dd-d-d-d-d-")
             self.draw_figure(self.current_points)
-            print(f"rotate")
         
         def mirrorX_button():
             self.canvas.delete("all")

@@ -1,9 +1,10 @@
 import numpy as np
 import math
+from shape_utils import get_biggest_x, get_biggest_y, get_center
+
 def scale_shape_15(screen, obj):
     prev_figure_center_point = get_center(obj)
 
-    print(obj)
     scale_factor = 1.5
     new_obj = {}
     for shape_type, shapes in obj.items():
@@ -54,9 +55,6 @@ def scale_shape_15(screen, obj):
 
         new_obj[shape_type] = new_shapes
 
-    # TODO: move the shape to the center
-    print(new_obj)
-    # return new_obj
     # move the figure back to the previous center point
     new_figure_center_point = get_center(new_obj)
     dx = prev_figure_center_point[0] - new_figure_center_point[0]
@@ -67,7 +65,6 @@ def scale_shape_15(screen, obj):
 
 def rotate_shape_45(screen, obj):
     prev_figure_center_point = get_center(obj)
-    print(obj)
     angle = math.pi/4
     new_obj = {}
     for shape_type, shapes in obj.items():
@@ -124,9 +121,6 @@ def rotate_shape_45(screen, obj):
     dy = prev_figure_center_point[1] - new_figure_center_point[1]
 
     return move_shape(new_obj, dx, dy)
-
-import numpy as np
-from shape_utils import get_biggest_x, get_biggest_y, get_center
 
 def move_shape(shape_dictionary, dx, dy):
     new_shape_dictionary = {}
