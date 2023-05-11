@@ -177,14 +177,14 @@ class App:
 
         def show_help():
             self.stop_shear()
-            help_str = "Available Buttons:\n"
+            help_str = "Available Buttons:\n\n"
             help_str += "Load -load the draw and center it in the screen\n"
             help_str += "Move - the shape\n"
             help_str += "Scale - the shape will be bigger\n"
             help_str += "Rotate - rotate the shape\n"
             help_str += "MirrorX - mirror the shape along the x-axis \n"
             help_str += "MirrorX - mirror the shape along the x-axis \n"
-            help_str += "shear - the shape\n"
+            help_str += "shear - drag the shape left and right for shearing\n"
             help_str += "help - press for additional information\n"
             help_str += "exit - press exit to exit\n"
             messagebox.showinfo("Help", help_str)
